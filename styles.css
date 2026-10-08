@@ -1,0 +1,1729 @@
+/* 色・余白は単語カードアプリと共通。アプリ固有のクラスはすべて exam- で始める */
+:root {
+  --page: #f7f8f3;
+  --surface: #ffffff;
+  --surface-tint: #eef7f1;
+  --ink: #1d2623;
+  --muted: #65716d;
+  --line: #dce5df;
+  --teal: #147b72;
+  --teal-dark: #0b5d57;
+  --coral: #c7533d;
+  --coral-soft: #ffe6df;
+  --gold: #dba73a;
+  --gold-soft: #fff4dc;
+  --green-soft: #dff3e9;
+  --shadow: 0 18px 50px rgba(23, 72, 66, 0.12);
+  /* グラフの線（ブランドの teal を、彩度が足りるよう1段鮮やかにした色） */
+  --chart-series: #00897b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), transparent 260px),
+    repeating-linear-gradient(90deg, rgba(20, 123, 114, 0.05) 0 1px, transparent 1px 84px),
+    var(--page);
+  font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  line-height: 1.6;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+}
+
+.topbar {
+  padding: 8px 0 18px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--coral);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1;
+}
+
+.exam-app {
+  display: grid;
+  gap: 16px;
+}
+
+.exam-muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.exam-kicker {
+  margin: 0 0 4px;
+  color: var(--coral);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+/* ---------- 成績の推移 ---------- */
+
+.exam-trend h2 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+}
+
+.exam-trend-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.exam-trend-stats strong {
+  color: var(--ink);
+}
+
+.exam-chart {
+  position: relative;
+  max-width: 560px;
+}
+
+.exam-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.exam-chart-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.exam-chart-pass {
+  stroke: var(--muted);
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.exam-chart-axis {
+  fill: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.exam-chart-value {
+  fill: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.exam-chart-line {
+  fill: none;
+  stroke: var(--chart-series);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.exam-chart-dot {
+  fill: var(--chart-series);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.exam-chart-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.exam-chart-hit:focus-visible {
+  stroke: var(--teal-dark);
+  stroke-width: 2;
+}
+
+.exam-chart-tip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 12px));
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 6px 18px rgba(23, 72, 66, 0.14);
+  color: var(--ink);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.exam-trend-table summary {
+  cursor: pointer;
+  color: var(--teal-dark);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.exam-trend-table table {
+  width: 100%;
+  margin-top: 6px;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.exam-trend-table th,
+.exam-trend-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+/* ---------- 検索 ---------- */
+
+.exam-search-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 1rem;
+}
+
+.exam-search-group {
+  margin: 18px 0 8px;
+  font-size: 1rem;
+}
+
+.exam-search-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exam-search-item {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.exam-search-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.exam-search-main {
+  margin: 8px 0;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.exam-search-main mark {
+  background: var(--gold-soft);
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+/* ---------- 記録のバックアップ ---------- */
+
+.exam-backup {
+  margin-top: 18px;
+}
+
+.exam-backup summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--teal-dark);
+}
+
+.exam-backup p {
+  margin: 8px 0;
+}
+
+.exam-backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.exam-backup-import {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.exam-backup-import input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.exam-backup-message {
+  margin: 10px 0 0;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+
+/* ---------- ボタン ---------- */
+
+.exam-button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: #eef4f2;
+  color: var(--teal-dark);
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.exam-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.exam-button.primary {
+  background: var(--teal);
+  color: #fff;
+}
+
+.exam-button.ghost {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+}
+
+.exam-button.small {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 0.88rem;
+}
+
+.exam-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.exam-button:focus-visible,
+.exam-choice:focus-visible,
+.exam-pal-item:focus-visible {
+  outline: 3px solid rgba(20, 123, 114, 0.28);
+  outline-offset: 2px;
+}
+
+.exam-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- パネル共通 ---------- */
+
+.exam-panel,
+.exam-level,
+.exam-stage,
+.exam-review {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow);
+}
+
+.exam-panel h2,
+.exam-level h2 {
+  margin-bottom: 4px;
+  font-size: 1.25rem;
+}
+
+/* ---------- ホーム ---------- */
+
+.exam-home-tabs {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 6px;
+}
+
+.exam-home-tab {
+  word-break: keep-all;
+  min-height: 48px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--teal-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.exam-home-tab.active {
+  border-color: var(--teal-dark);
+  background: var(--teal-dark);
+  color: #fff;
+}
+
+/* 知識カード */
+.exam-card-actions.three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.exam-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.exam-chip-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--teal-dark);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exam-chip-button.active {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: #fff;
+}
+
+.exam-learn-guide {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--surface-tint);
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+.exam-learn-guide p {
+  margin: 0 0 6px;
+}
+
+.exam-learn-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.exam-learn-list {
+  display: grid;
+  gap: 8px;
+}
+
+.exam-learn-row {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.exam-learn-row.open {
+  border-color: var(--teal);
+  background: #fbfdfc;
+}
+
+.exam-learn-front {
+  color: var(--teal-dark);
+  font-size: 1.1rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.exam-learn-back {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.exam-learn-sub {
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+
+.exam-learn-note,
+.exam-learn-hint {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* 語順並べ替え（タップ式） */
+.exam-order-slot,
+.exam-order-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 56px;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.exam-order-slot {
+  border: 2px solid var(--teal);
+  background: var(--surface-tint);
+}
+
+.exam-order-slot.empty {
+  align-items: center;
+  border-style: dashed;
+}
+
+.exam-order-pool {
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.exam-order-chip {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1.5px solid var(--teal);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--teal-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exam-order-slot .exam-order-chip {
+  background: var(--teal);
+  color: #fff;
+}
+
+.exam-order-chip:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.exam-order-answer {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+/* 形式別ドリル・弱点分析 */
+.exam-analysis h2 {
+  margin-bottom: 2px;
+}
+
+.exam-drill-group {
+  margin: 16px 0 8px;
+  color: var(--coral);
+  font-size: 0.9rem;
+}
+
+.exam-weak-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exam-weak-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--coral-soft);
+}
+
+.exam-weak-list strong {
+  color: var(--coral);
+}
+
+.exam-drill-head {
+  justify-content: space-between;
+}
+
+.exam-drill-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.exam-drill-info {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.exam-drill-info .exam-meter {
+  max-width: 280px;
+}
+
+.exam-drill-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.exam-level-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(23, 72, 66, 0.07);
+}
+
+.exam-level-tab {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 6px;
+  background: #edf4f2;
+  color: var(--teal-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.exam-level-tab.active {
+  background: var(--teal);
+  color: #fff;
+}
+
+.exam-resume,
+.exam-review-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.exam-resume {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.exam-level-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin-bottom: 12px;
+}
+
+.exam-mode-help {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.exam-mode-help div {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-tint);
+}
+
+.exam-mode-help dt {
+  color: var(--teal-dark);
+  font-weight: 800;
+}
+
+.exam-mode-help dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.exam-card {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.exam-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.exam-card-head h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+/* 知識カードは題名が長いので、バッジは入りきらなければ次の行へ */
+.exam-study-card .exam-card-head {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 6px 10px;
+}
+
+.exam-card-sub {
+  margin: 0;
+  color: var(--teal-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.exam-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.exam-card-actions .exam-button {
+  padding: 0 8px;
+}
+
+.exam-badge {
+  flex: none;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef4f2;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.exam-badge.pass {
+  background: var(--green-soft);
+  color: var(--teal-dark);
+}
+
+.exam-badge.fail {
+  background: var(--coral-soft);
+  color: var(--coral);
+}
+
+/* ---------- 試験 ---------- */
+
+.exam-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.exam-bar-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+}
+
+.exam-bar-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exam-chip {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--surface-tint);
+  color: var(--teal-dark);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.exam-timer {
+  color: var(--teal-dark);
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.exam-timer.is-low {
+  color: var(--coral);
+}
+
+.exam-progress {
+  height: 6px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8eeeb;
+}
+
+.exam-progress span {
+  display: block;
+  height: 100%;
+  background: var(--teal);
+  transition: width 200ms ease;
+}
+
+.exam-section-head h2 {
+  margin-bottom: 2px;
+  font-size: 1.1rem;
+}
+
+.exam-section-head p {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.exam-body {
+  display: grid;
+  gap: 14px;
+}
+
+/* 本文 */
+.exam-passage {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fcfdfb;
+}
+
+.exam-passage summary {
+  padding: 10px 14px;
+  color: var(--teal-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.exam-passage-body {
+  padding: 0 16px 6px;
+  font-size: 1rem;
+  line-height: 1.85;
+  overflow-wrap: break-word;
+}
+
+.exam-passage-body p {
+  margin-bottom: 12px;
+}
+
+.exam-passage-source {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: right;
+}
+
+.exam-choice-text u {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.exam-blank {
+  display: inline-block;
+  min-width: 3.2em;
+  margin: 0 2px;
+  border-bottom: 1.5px solid var(--ink);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.exam-blank.is-labeled {
+  min-width: 4.5em;
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+.exam-mark-no {
+  margin-right: 2px;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+.exam-blank.is-target,
+.exam-mark.is-target {
+  border-radius: 4px;
+  background: #ffe9a8;
+  color: var(--ink);
+  box-shadow: 0 0 0 3px #ffe9a8;
+}
+
+/* 設問 */
+.exam-question {
+  min-width: 0;
+}
+
+.exam-question-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.exam-qno {
+  color: var(--coral);
+  font-weight: 800;
+}
+
+.exam-prompt {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.exam-text {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--surface-tint);
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.8;
+  overflow-wrap: break-word;
+}
+
+.exam-text u,
+.exam-passage-body u {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.exam-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  counter-reset: item;
+}
+
+.exam-items li {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 700;
+  counter-increment: item;
+}
+
+.exam-items li::before {
+  content: counter(item) ". ";
+  color: var(--coral);
+}
+
+.exam-items.compact li {
+  padding: 3px 10px;
+  font-size: 0.9rem;
+}
+
+.exam-choices {
+  display: grid;
+  gap: 8px;
+}
+
+.exam-choice {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.exam-choice:hover:not(:disabled) {
+  border-color: var(--teal);
+}
+
+.exam-choice:disabled {
+  cursor: default;
+}
+
+.exam-choice-letter {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #eef4f2;
+  color: var(--teal-dark);
+  font-weight: 800;
+}
+
+.exam-choice-text {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.exam-choice.is-chosen {
+  border-color: var(--teal);
+  background: var(--surface-tint);
+}
+
+.exam-choice.is-chosen .exam-choice-letter {
+  background: var(--teal);
+  color: #fff;
+}
+
+.exam-choice.is-correct {
+  border-color: var(--teal);
+  background: var(--green-soft);
+}
+
+.exam-choice.is-correct .exam-choice-letter {
+  background: var(--teal);
+  color: #fff;
+}
+
+.exam-choice.is-wrong {
+  border-color: var(--coral);
+  background: var(--coral-soft);
+}
+
+.exam-choice.is-wrong .exam-choice-letter {
+  background: var(--coral);
+  color: #fff;
+}
+
+.exam-feedback {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.exam-feedback.ok {
+  background: var(--green-soft);
+  color: var(--teal-dark);
+}
+
+.exam-feedback.ng {
+  background: var(--coral-soft);
+  color: #8f3322;
+}
+
+.exam-explanation {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf6;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.exam-explanation span {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.exam-review-item .exam-explanation {
+  font-size: 0.9rem;
+}
+
+.exam-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* 問題一覧 */
+.exam-palette {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.exam-palette summary {
+  padding: 12px 0 4px;
+  color: var(--teal-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.exam-pal-group {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.exam-pal-group > span {
+  padding-top: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.exam-pal-group > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.exam-pal-item {
+  min-width: 40px;
+  height: 34px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exam-pal-item.is-answered {
+  border-color: var(--teal);
+  background: var(--surface-tint);
+  color: var(--teal-dark);
+}
+
+.exam-pal-item.is-correct {
+  border-color: var(--teal);
+  background: var(--green-soft);
+  color: var(--teal-dark);
+}
+
+.exam-pal-item.is-wrong {
+  border-color: var(--coral);
+  background: var(--coral-soft);
+  color: var(--coral);
+}
+
+.exam-pal-item.is-current {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.exam-palette-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+/* ---------- 結果 ---------- */
+
+.exam-result {
+  display: grid;
+  gap: 8px;
+}
+
+.exam-score {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.exam-score strong {
+  color: var(--teal-dark);
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.exam-verdict {
+  margin: 4px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.exam-verdict.pass {
+  background: var(--green-soft);
+  color: var(--teal-dark);
+}
+
+.exam-verdict.fail {
+  background: var(--coral-soft);
+  color: #8f3322;
+}
+
+.exam-breakdown {
+  width: 100%;
+  margin: 6px 0 10px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.exam-breakdown th,
+.exam-breakdown td {
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.exam-breakdown th {
+  font-weight: 700;
+}
+
+.exam-breakdown td:nth-child(2) {
+  width: 64px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.exam-breakdown td:last-child {
+  width: 34%;
+}
+
+.exam-meter {
+  display: block;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8eeeb;
+}
+
+.exam-meter span {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+}
+
+.exam-review {
+  display: grid;
+  gap: 10px;
+}
+
+.exam-review-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.exam-review-toolbar h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.exam-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.exam-toggle input {
+  width: 18px;
+  height: 18px;
+}
+
+.exam-review-item {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--teal);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.exam-review-item.ng {
+  border-left-color: var(--coral);
+}
+
+.exam-review-item .exam-text {
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.exam-review-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.exam-review-mark {
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.exam-review-item.ok .exam-review-mark {
+  color: var(--teal);
+}
+
+.exam-review-item.ng .exam-review-mark {
+  color: var(--coral);
+}
+
+.exam-review-answers {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.exam-review-answers div {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.exam-review-answers dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.exam-review-answers dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.exam-passage.in-review {
+  background: #fff;
+}
+
+/* 本文は枠の中だけでスクロールさせ、設問と選択肢が常に近くに見えるようにする。
+   設問が指す空欄・下線へは app.js が枠内で自動スクロールする */
+.exam-body.has-passage .exam-passage-body {
+  max-height: 42vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* ---------- 広い画面: 本文と設問を横に並べる ---------- */
+
+@media (min-width: 900px) {
+  .exam-body.has-passage {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .exam-body.has-passage .exam-passage {
+    position: sticky;
+    top: 12px;
+  }
+
+  .exam-body.has-passage .exam-passage-body {
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+}
+
+/* ---------- スマホ ---------- */
+
+@media (max-width: 620px) {
+  .app-shell {
+    width: calc(100% - 32px);
+    padding-top: 14px;
+  }
+
+  .exam-panel,
+  .exam-level,
+  .exam-stage,
+  .exam-review {
+    padding: 14px;
+  }
+
+  .exam-mode-help {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-drill-row {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-drill-actions .exam-button {
+    flex: 1;
+  }
+
+  .exam-pal-group {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .exam-pal-group > span {
+    padding-top: 0;
+  }
+
+  .exam-text {
+    font-size: 1rem;
+  }
+}
+
+/* B級: 回の実施年月 */
+.exam-card-held {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+/* B級: 記述式の和訳 */
+.exam-writing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.exam-writing-exam {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.exam-writing-exam:hover {
+  border-color: var(--teal);
+}
+
+.exam-writing-label {
+  display: block;
+  margin: 12px 0 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.exam-writing-draft {
+  width: 100%;
+  min-height: 96px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.exam-writing-model {
+  margin: 12px 0 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf6;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.exam-writing-model span {
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.exam-writing-model p {
+  margin: 0;
+}
+
+/* 特A級: 課題の一覧・長文の翻訳・作文 */
+.exam-special-list {
+  display: grid;
+  gap: 8px;
+}
+
+.exam-special-task {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.exam-special-task:hover {
+  border-color: var(--teal);
+}
+
+.exam-special-task .exam-badge {
+  justify-self: start;
+}
+
+.exam-writing-article {
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: var(--surface-tint);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.exam-writing-article p {
+  margin: 0 0 10px;
+}
+
+.exam-writing-article-title {
+  font-weight: 800;
+  text-align: center;
+}
+
+.exam-writing-model .exam-writing-article-title {
+  margin-bottom: 6px;
+}
+
+.exam-writing-model p + p {
+  margin-top: 8px;
+}
+
+.exam-essay-guide {
+  margin: 0 0 10px;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.exam-essay-topics {
+  display: grid;
+  gap: 6px;
+}
+
+.exam-essay-topic {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* B級: 2次試験（口頭試験） */
+.exam-oral-fold,
+.exam-oral-answer {
+  margin-top: 10px;
+}
+
+.exam-oral-fold summary,
+.exam-oral-answer summary {
+  color: var(--teal-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.exam-oral-fold p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.exam-oral-answer summary {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid var(--teal);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.exam-oral-answer[open] summary {
+  margin-bottom: 4px;
+}
+
+.exam-oral-timer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.exam-oral-clock {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.exam-oral-clock.is-over {
+  color: var(--coral);
+}
+
+.exam-oral-ja {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.exam-oral-ja p {
+  margin: 0 0 6px;
+}
+
+.exam-oral-evidence {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--teal);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-tint);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.exam-oral-evidence strong {
+  display: block;
+  color: var(--teal-dark);
+  font-size: 0.82rem;
+}
+
+.exam-oral-phrases {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.exam-oral-phrases div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 4px 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.exam-oral-phrases dt {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.exam-oral-phrases dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (max-width: 560px) {
+  .exam-oral-phrases div {
+    grid-template-columns: 1fr;
+  }
+}
+
+.exam-oral .exam-button[aria-pressed="true"] {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.exam-oral-full {
+  margin: 10px 0;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.exam-oral-full strong {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* パスワード入力（A級アプリの入口） */
+.exam-gate {
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.exam-gate h2,
+.exam-gate p {
+  margin-bottom: 0;
+}
+
+.exam-gate-message {
+  min-height: 1.6em;
+  color: var(--coral);
+}
