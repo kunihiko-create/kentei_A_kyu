@@ -86,7 +86,55 @@ h1 {
 
 .exam-app {
   display: grid;
+  gap: 10px;
+}
+
+/* 画面の本体。--exam-zoom は文字の大きさの設定（app.js） */
+.exam-screen {
+  display: grid;
   gap: 16px;
+  min-width: 0;
+  zoom: var(--exam-zoom, 1);
+}
+
+/* 文字の大きさの切り替え（どの画面でも右上に出す） */
+.exam-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.exam-text-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.exam-text-size-label {
+  padding: 0 6px 0 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.exam-text-size-button {
+  min-width: 44px;
+  min-height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--teal-dark);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.exam-text-size-button.active {
+  background: var(--teal);
+  color: #fff;
 }
 
 .exam-muted {
@@ -1386,7 +1434,7 @@ h1 {
   }
 
   .exam-body.has-passage .exam-passage-body {
-    max-height: calc(100vh - 110px);
+    max-height: calc((100vh - 110px) / var(--exam-zoom, 1));
     overflow-y: auto;
   }
 }
